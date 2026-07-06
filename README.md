@@ -195,5 +195,7 @@ from arbitrary external text.
 ## Usage
 
 ```bash
-python3 main.py
+pip install -r requirements.txt
+python cli.py build
+python cli.py bridges
 ```
