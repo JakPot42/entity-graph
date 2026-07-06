@@ -191,3 +191,11 @@ from arbitrary external text.
   firms present in the source data (e.g. Litigation Network's judges and
   plaintiff firms) — scoped to the "same company/institution across tools"
   question CLAUDE.md's P71 spec asks, not full person-level resolution.
+
+## Usage
+
+```bash
+pip install -r requirements.txt
+python cli.py build
+python cli.py bridges
+```
