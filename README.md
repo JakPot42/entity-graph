@@ -189,4 +189,4 @@ from arbitrary external text.
   intentionally does NOT include the individual people, judges, or law
   firms present in the source data (e.g. Litigation Network's judges and
   plaintiff firms) — scoped to the "same company/institution across tools"
-  question CLAUDE.md's P71 spec asks, not full person-level resolution.
+  question this tool is scoped to, not full person-level resolution.
