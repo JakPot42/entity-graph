@@ -1,4 +1,4 @@
-# entity_graph — Unified Entity Graph (P71)
+# Unified Entity Graph
 
 ## Scope
 
@@ -11,8 +11,7 @@ entity output, assigns stable cross-project entity IDs, and answers a
 question no single tool can: *"show me every mention of this entity across
 all portfolio tools."*
 
-It is the fourth deployment of `entity_resolver.py`
-(GhostTrace &rarr; tech-scanner &rarr; PatientFusion &rarr; here), extended
+It reuses a fuzzy entity-resolution engine, extended
 with a `mentions` list per entity (one per source-project sighting) and a
 small curated alias table for known corporate subsidiaries that plain fuzzy
 matching cannot bridge (see "A real, disclosed gap" below).
