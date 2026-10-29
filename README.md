@@ -3,8 +3,8 @@
 ## Scope
 
 A federation layer, not a new intelligence tool. GhostTrace, FriendShore,
-Litigation Network, IP Theft Pattern Database, Debt Exposure Monitor,
-Emerging Tech Horizon Scanner, and the Pre-Acquisition Intelligence Brief
+Litigation Network, Debt Exposure Monitor, Emerging Tech Horizon Scanner,
+and the Pre-Acquisition Intelligence Brief
 each independently resolve entities within their own demo data, but none of
 them know the others exist. This project ingests each tool's structured
 entity output, assigns stable cross-project entity IDs, and answers a
@@ -17,9 +17,9 @@ small curated alias table for known corporate subsidiaries that plain fuzzy
 matching cannot bridge (see "A real, disclosed gap" below).
 
 ```
-py cli.py build              # ingest all 7 source projects, resolve, save the graph
+py cli.py build              # ingest all 6 source projects, resolve, save the graph
 py cli.py bridges             # list every entity recognized across 2+ projects
-py cli.py query "Boeing"      # every mention of an entity, across every tool
+py cli.py query "Goldman"     # every mention of an entity, across every tool
 py cli.py stats               # portfolio-wide federation counts
 py cli.py list-projects       # federated projects + entity counts contributed
 py cli.py render              # matplotlib PNG, bridge entities highlighted in red
@@ -34,15 +34,15 @@ project's real `seed_data.py` constants — not a live `import` of the source
 project's runtime. This was a deliberate choice, not a shortcut: GhostTrace
 and FriendShore pull in FastAPI, SQLAlchemy, and (for GhostTrace) ChromaDB
 just to reach a handful of module-level list-of-dict constants; importing
-all seven source projects' full dependency stacks into one federation layer
-would mean maintaining seven different requirements.txt files' worth of
+all six source projects' full dependency stacks into one federation layer
+would mean maintaining six different requirements.txt files' worth of
 transitive dependencies just to read data that never changes at runtime in
 any of them (these are `DEMO_MODE` seed datasets, not live feeds).
 
 This mirrors the realistic production shape better than it might first
 appear: a real federation layer consumes each tool's *exported* records
 (an API response, a JSON export) — it does not reach into another service's
-internal database. None of these seven tools expose a live entity-export
+internal database. None of these six tools expose a live entity-export
 API today, so the closest honest stand-in is a transcription of their
 demo/seed data, cited back to the source file it came from in every
 adapter's docstring.
@@ -54,23 +54,22 @@ itself; a production version would ingest a real exported feed instead.
 
 ---
 
-## What it actually found: 4 real cross-project bridges
+## What it actually found: 1 real cross-project bridge
 
-Built by ingesting the seven source projects' actual seed data (66 raw
-sightings resolve to entities; 4 are recognized across more than one
-project) — not constructed or invented to make a good demo. All four
-were found by reading the real seed data during this build, the same
-"verify before building" discipline as every other build this session:
+Built by ingesting the six source projects' actual seed data (60 raw
+sightings resolve to 52 entities; 1 is recognized across more than one
+project), not constructed or invented to make a good demo:
 
 | Entity | Seen in | How |
 |---|---|---|
-| **Boeing Company** | `ip_theft`, `litigation_network` | Real DOJ trade-secret-theft victim (Dongfan Chung, Space Shuttle/C-17 documents) *and* real securities-litigation defendant (737 MAX/MCAS, $234.5M settlement) |
-| **General Electric Company** | `ip_theft`, `litigation_network` | Real trade-secret victim as **"GE Power"** and **"GE Aviation"** (Zheng and Xu cases) *and* real securities-litigation defendant (insurance/Power-division reserves, $200M settlement) |
 | **Goldman Sachs Group, Inc.** | `debt_exposure_monitor`, `litigation_network` | Real underwriter on a fictional demo supplier's bond issuance *and* real securities-litigation defendant (1MDB, $215M settlement) |
-| **Northrop Grumman** | `ip_theft`, `tech_scanner` | Real trade-secret victim (Gowadia, B-2 stealth exhaust system) *and* real institution behind a (fictional demo) patent on GPS-denied swarm coordination |
+
+An earlier version also ingested a seventh source, a list of DOJ
+trade-secret cases. It was removed on 29 October 2026, together with the
+three bridges it produced.
 
 `py cli.py bridges` reproduces this table live from the graph; `output/entity_graph.png`
-renders it visually (red nodes = bridge entities, blue squares = the 7 source
+renders it visually (red nodes = bridge entities, blue squares = the 6 source
 projects).
 
 ---
@@ -79,7 +78,8 @@ projects).
 
 Before assuming the existing three-band fuzzy engine (auto-merge / adjudicate
 / distinct — unchanged since GhostTrace) would be enough, the actual
-similarity score was computed against the real seed data:
+similarity score was computed against the seed data as it then stood (the
+case-list source removed on 29 October 2026 named "GE Power"):
 
 ```
 similarity("GE Power", "General Electric Company")  ->  33.3
@@ -128,7 +128,7 @@ introduce it first.
 **Mentions vs. relationships — two different edge types, same graph.**
 Every raw entity sighting becomes a `mentioned_in` edge from the entity to
 its source project (bipartite half, same pattern as citegraph's
-citation<->project graph). Separately, four of the seven source projects
+citation<->project graph). Separately, four of the six source projects
 also carry real *structural* relationships in their own seed data
 (GhostTrace's ownership chain, FriendShore's supply chain, Debt Exposure
 Monitor's lending, Pre-Acquisition Brief's litigation/corporate-family
@@ -140,7 +140,7 @@ mention both resolve onto the *same* node.
 **Adjudicator is wired but unexercised by the demo data.** `resolve_entities()`
 accepts the same `Adjudicator` callable signature as every prior deployment
 (`(name_a, name_b) -> bool`), for consistency and future extension — but no
-pair in this build's actual 66 raw entities lands in the [75, 90) adjudicate
+pair in this build's actual 60 raw entities lands in the [75, 90) adjudicate
 band without also being caught by the known-alias table first. Verified with
 a real Northrop Grumman example in the test suite, not asserted.
 
@@ -148,7 +148,7 @@ a real Northrop Grumman example in the test suite, not asserted.
 
 ## Test suite
 
-52 tests, all passing (`py -m pytest tests/`):
+48 tests, all passing (`py -m pytest tests/`):
 - `test_entity_resolver.py` — normalization, stable IDs, the real GE-Power
   similarity gap, known-alias merging, correct non-merges (Raytheon,
   Parsons), adjudicator wiring
@@ -156,8 +156,8 @@ a real Northrop Grumman example in the test suite, not asserted.
   integrity, source-data-derived counts (not hardcoded guesses)
 - `test_graph_store.py` — graph construction, bridge detection, fuzzy
   query, save/load round-trip
-- `test_ingest.py` — full end-to-end build, asserts the 4 real documented
-  bridges by name and project set
+- `test_ingest.py`: full end-to-end build, asserts the real documented
+  bridge by name and project set
 - `test_cli.py` — every command via `click.testing.CliRunner`
 
 One real bug caught while building this, the same way every other build

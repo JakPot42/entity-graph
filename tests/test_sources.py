@@ -45,12 +45,6 @@ def test_ghosttrace_ownership_chain_edge_count_matches_seed_data():
     assert len(ghosttrace.get_relationships()) == 5
 
 
-def test_ip_theft_has_the_natural_cross_project_bridge_victims():
-    from sources import ip_theft
-    names = {e["name"] for e in ip_theft.get_entities()}
-    assert {"Boeing", "Northrop Grumman", "GE Power", "GE Aviation"} <= names
-
-
 def test_debt_exposure_monitor_lending_edges_all_point_at_demo_company():
     from sources import debt_exposure_monitor as dem
     rels = dem.get_relationships()

@@ -3,8 +3,8 @@ Unified Entity Graph -- Portfolio Bridge (P71) CLI.
 
 Federation layer that assigns stable, cross-project entity IDs so the same
 company/institution appearing across GhostTrace, FriendShore, Litigation
-Network, IP Theft DB, Debt Exposure Monitor, Tech Scanner, and Pre-Acquisition
-Brief is recognized as one node instead of seven isolated sightings.
+Network, Debt Exposure Monitor, Tech Scanner, and Pre-Acquisition Brief is
+recognized as one node instead of six isolated sightings.
 
 Every Table AND Panel must use box.ASCII2 -- Windows cp1252 terminal
 compatibility, same discipline used across the rest of the portfolio.
@@ -45,7 +45,7 @@ def cli() -> None:
     Unified Entity Graph (P71) -- the federation layer Arbor's eventual
     Phase 6 merger would otherwise need to invent under pressure. Reuses
     entity_resolver.py (fourth deployment: GhostTrace -> tech-scanner ->
-    PatientFusion -> here) to give seven independently-built portfolio tools
+    PatientFusion -> here) to give six independently-built portfolio tools
     a shared notion of "the same company."
     """
 

@@ -16,7 +16,6 @@ from . import (
     debt_exposure_monitor,
     friendshore,
     ghosttrace,
-    ip_theft,
     litigation_network,
     tech_scanner,
 )
@@ -25,7 +24,6 @@ ALL_SOURCES = [
     ghosttrace,
     friendshore,
     litigation_network,
-    ip_theft,
     debt_exposure_monitor,
     tech_scanner,
     acquisition_brief,

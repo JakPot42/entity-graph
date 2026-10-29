@@ -7,24 +7,20 @@ import graph_store
 from ingest import build
 
 
-def test_build_produces_a_graph_with_all_seven_projects():
+def test_build_produces_a_graph_with_all_six_projects():
     graph, resolved, relationships = build()
-    assert len(graph_store.project_nodes(graph)) == 7
+    assert len(graph_store.project_nodes(graph)) == 6
     assert len(resolved) > 30
     assert relationships  # ghosttrace, friendshore, debt_exposure, acquisition_brief all contribute edges
 
 
-def test_build_finds_the_four_documented_cross_project_bridges():
-    """The real, naturally-occurring overlaps found while researching this
-    build: Boeing, General Electric, Goldman Sachs, and Northrop Grumman each
-    appear in two independently-built portfolio tools' real seed data."""
+def test_build_finds_the_documented_cross_project_bridge():
+    """The real, naturally-occurring overlap in the six sources' seed data:
+    Goldman Sachs appears in two independently-built portfolio tools."""
     graph, _, _ = build()
     bridges = {b["canonical_name"]: set(b["projects"]) for b in graph_store.bridge_entities(graph)}
 
-    assert bridges["Boeing Company"] == {"ip_theft", "litigation_network"}
-    assert bridges["General Electric Company"] == {"ip_theft", "litigation_network"}
-    assert bridges["Goldman Sachs Group, Inc."] == {"debt_exposure_monitor", "litigation_network"}
-    assert bridges["Northrop Grumman"] == {"ip_theft", "tech_scanner"}
+    assert bridges == {"Goldman Sachs Group, Inc.": {"debt_exposure_monitor", "litigation_network"}}
 
 
 def test_build_does_not_incorrectly_merge_fictional_and_real_raytheon():

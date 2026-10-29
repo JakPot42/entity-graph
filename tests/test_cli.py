@@ -25,7 +25,7 @@ def test_query_before_build_reports_missing_graph(monkeypatch, tmp_path):
     assert "No graph found" in result.output
 
 
-def test_build_then_bridges_shows_boeing(monkeypatch, tmp_path):
+def test_build_then_bridges_shows_goldman_sachs(monkeypatch, tmp_path):
     _redirect_output_paths(monkeypatch, tmp_path)
     runner = CliRunner()
 
@@ -35,8 +35,7 @@ def test_build_then_bridges_shows_boeing(monkeypatch, tmp_path):
 
     bridges_result = runner.invoke(cli_module.cli, ["bridges"])
     assert bridges_result.exit_code == 0, bridges_result.output
-    assert "Boeing Company" in bridges_result.output
-    assert "General Electric Company" in bridges_result.output
+    assert "Goldman Sachs Group, Inc." in bridges_result.output
 
 
 def test_build_then_query_shows_cross_project_mentions(monkeypatch, tmp_path):
@@ -44,11 +43,11 @@ def test_build_then_query_shows_cross_project_mentions(monkeypatch, tmp_path):
     runner = CliRunner()
     runner.invoke(cli_module.cli, ["build"])
 
-    result = runner.invoke(cli_module.cli, ["query", "Boeing"])
+    result = runner.invoke(cli_module.cli, ["query", "Goldman Sachs"])
     assert result.exit_code == 0, result.output
     assert "CROSS-PROJECT BRIDGE" in result.output
     assert "litigation_network" in result.output
-    assert "ip_theft" in result.output
+    assert "debt_exposure_monitor" in result.output
 
 
 def test_build_then_stats_and_list_projects(monkeypatch, tmp_path):
